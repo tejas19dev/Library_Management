@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Curator Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#54436b",
+                    "on-surface": "#2d3335",
+                    "surface-dim": "#d5dbdd",
+                    "primary-fixed": "#3d89ff",
+                    "on-tertiary": "#fef6ff",
+                    "on-surface-variant": "#5a6062",
+                    "on-error-container": "#6e0a12",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#403057",
+                    "outline-variant": "#adb3b5",
+                    "surface-bright": "#f8f9fa",
+                    "on-primary-fixed-variant": "#001434",
+                    "surface-container": "#ebeef0",
+                    "on-primary-fixed": "#000000",
+                    "tertiary-container": "#e4ceff",
+                    "on-secondary": "#f6f9ff",
+                    "secondary-container": "#dfe3e8",
+                    "error-dim": "#67040d",
+                    "background": "#f8f9fa",
+                    "surface": "#f8f9fa",
+                    "secondary-fixed": "#dfe3e8",
+                    "surface-container-highest": "#dee3e6",
+                    "on-primary-container": "#000410",
+                    "primary": "#005bc1",
+                    "tertiary": "#695781",
+                    "primary-fixed-dim": "#2a7bf1",
+                    "surface-tint": "#005bc1",
+                    "on-background": "#2d3335",
+                    "primary-container": "#3d89ff",
+                    "outline": "#767c7e",
+                    "on-error": "#fff7f6",
+                    "error-container": "#fa746f",
+                    "on-secondary-fixed": "#3c4044",
+                    "tertiary-fixed-dim": "#d6c0f0",
+                    "secondary": "#5b5f64",
+                    "error": "#a83836",
+                    "secondary-fixed-dim": "#d1d5da",
+                    "primary-dim": "#0050aa",
+                    "tertiary-dim": "#5c4b74",
+                    "inverse-on-surface": "#9b9d9e",
+                    "on-secondary-fixed-variant": "#585c61",
+                    "inverse-surface": "#0c0f10",
+                    "inverse-primary": "#4a8eff",
+                    "surface-container-low": "#f1f4f5",
+                    "surface-variant": "#dee3e6",
+                    "tertiary-fixed": "#e4ceff",
+                    "on-tertiary-fixed-variant": "#5e4d75",
+                    "secondary-dim": "#4f5358",
+                    "on-secondary-container": "#4e5257",
+                    "on-primary": "#f9f8ff",
+                    "surface-container-high": "#e5e9eb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "xxl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3, .headline {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-x-hidden">
+<!-- SideNavBar (Fixed) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-100 dark:bg-slate-950 flex flex-col py-8 px-4 z-40">
+<div class="mb-12 px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+</div>
+<div>
+<h1 class="text-xl font-black text-slate-900 dark:text-white leading-tight">The Curator</h1>
+<p class="font-manrope text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Knowledge Archive</p>
+</div>
+</div>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center gap-3 py-3 px-4 rounded-xl font-manrope text-sm font-medium transition-transform duration-200 hover:translate-x-1 text-blue-700 dark:text-blue-300 relative after:content-[''] after:absolute after:left-0 after:w-1 after:h-6 after:bg-blue-600 after:rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 rounded-xl font-manrope text-sm font-medium transition-transform duration-200 hover:translate-x-1 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span>Books</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 rounded-xl font-manrope text-sm font-medium transition-transform duration-200 hover:translate-x-1 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span>Issue Book</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 rounded-xl font-manrope text-sm font-medium transition-transform duration-200 hover:translate-x-1 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span>My Books</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 rounded-xl font-manrope text-sm font-medium transition-transform duration-200 hover:translate-x-1 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span>Admin Panel</span>
+</a>
+</nav>
+<div class="mt-auto px-2">
+<button class="w-full py-4 px-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-xxl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>New Entry</span>
+</button>
+<div class="mt-8 space-y-1">
+<a class="flex items-center gap-3 py-2 px-4 font-manrope text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help_outline">help_outline</span>
+<span>Help</span>
+</a>
+<a class="flex items-center gap-3 py-2 px-4 font-manrope text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-between items-center px-8 py-4 w-full">
+<div class="flex items-center gap-6 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-sm placeholder-on-surface-variant/60 font-body" placeholder="Search the archive..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1">
+<button class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 transition-colors scale-95 active:duration-100">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 transition-colors scale-95 active:duration-100">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="h-8 w-px bg-surface-container-high mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-slate-800 dark:text-slate-100 leading-none">Julian Thorne</p>
+<p class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">Chief Librarian</p>
+</div>
+<img alt="User profile" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" data-alt="Close-up portrait of a professional male librarian in a well-lit studio setting with a friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCldI8HMccWeGruBXp3Y7bJLylGBAd1opM2v6fFEV-RJeCKJeWwp35603YQO0DyYXCb_hq4nLSLPHmUCDYwdXtnVy-IU8tKxPhDmDdGuxMB-2peizzk-nu6HSrUaqEPsrkFHW-rOQbCGUUWCh1TEuAd9FNCVIeiiEbkvhHSi0UaBzkk-PMxvXkJ0obgfU-GEEgO1BH3NuhleSjiTutYnZpHjysI5pp0ByB27aLwmbN5vfHd9cZIuzkj1RR2kSchv6PMe0HN-OkFm9s"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="px-12 py-10 max-w-7xl w-full mx-auto flex-grow">
+<!-- Page Header -->
+<div class="mb-10">
+<h2 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Library Overview</h2>
+<p class="text-on-surface-variant text-lg">Curating the collective intelligence of the archive.</p>
+</div>
+<!-- Bento Grid - Key Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+<!-- Total Books -->
+<div class="bg-surface-container-lowest p-8 rounded-xxl flex flex-col justify-between group hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="w-14 h-14 rounded-2xl bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="collections_bookmark">collections_bookmark</span>
+</div>
+<span class="text-xs font-bold px-3 py-1 bg-primary/10 text-primary rounded-full">+12% Growth</span>
+</div>
+<div>
+<h3 class="text-slate-500 font-label text-xs uppercase tracking-[0.1em] font-bold mb-1">Total Books</h3>
+<p id="stat-total-books" class="text-5xl font-extrabold text-slate-900">12,482</p>
+<div class="mt-6 flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="trending_up">trending_up</span>
+<span>423 added this month</span>
+</div>
+</div>
+</div>
+<!-- Issued Books -->
+<div class="bg-surface-container-lowest p-8 rounded-xxl flex flex-col justify-between group hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="w-14 h-14 rounded-2xl bg-tertiary-container/30 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-3xl" data-icon="assignment_return">assignment_return</span>
+</div>
+<span class="text-xs font-bold px-3 py-1 bg-tertiary/10 text-tertiary rounded-full">Active Circulation</span>
+</div>
+<div>
+<h3 class="text-slate-500 font-label text-xs uppercase tracking-[0.1em] font-bold mb-1">Issued Books</h3>
+<p id="stat-issued-books" class="text-5xl font-extrabold text-slate-900">3,109</p>
+<div class="mt-6 flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-xs text-tertiary" data-icon="sync">sync</span>
+<span>24% total library capacity</span>
+</div>
+</div>
+</div>
+<!-- Overdue Books -->
+<div class="bg-surface-container-lowest p-8 rounded-xxl flex flex-col justify-between group hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="w-14 h-14 rounded-2xl bg-error-container/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-3xl" data-icon="running_with_errors">running_with_errors</span>
+</div>
+<span class="text-xs font-bold px-3 py-1 bg-error/10 text-error rounded-full">Requires Action</span>
+</div>
+<div>
+<h3 class="text-slate-500 font-label text-xs uppercase tracking-[0.1em] font-bold mb-1">Overdue Books</h3>
+<p id="stat-overdue-books" class="text-5xl font-extrabold text-error">84</p>
+<div class="mt-6 flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-xs text-error" data-icon="priority_high">priority_high</span>
+<span>12 critical (over 10 days)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Content Row 2: Featured & Activity -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Recent Activity List (60%) -->
+<div class="lg:col-span-8 bg-surface-container-low rounded-xxl p-8">
+<div class="flex justify-between items-center mb-10">
+<h3 class="text-2xl font-bold text-slate-900">Latest Transactions</h3>
+<button class="text-primary text-sm font-bold flex items-center gap-1 hover:gap-2 transition-all">
+                            View All History
+                            <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="space-y-6">
+<!-- Activity Item 1 -->
+<div class="flex items-center justify-between p-2 bg-transparent hover:bg-surface-container-lowest rounded-xl transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded-md bg-slate-200 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Classic book cover with elegant serif typography and minimalist graphic design on a textured paper background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkKHY1k-fd3N2hpr-Suvk9NmcNaXapTSfqwwwWmM6XSQExO-s67MbCw9bK-gbY-5URj4gMqTmCaZyeN8JpiKAdzBYYcKixKNELs4bTREW6mtjU5GT5aj0vOir2ehFkJ2xSPB5t7Zqda0o4xl82BdnkmHs6g7kclDp-Bjx2f_bOMfti8TcCHx_zstrpiaj3j2uLjjcZhJlgKUJEJLCrVHshQYNIzfebZfsbHj_a83qBZBa73Vof3APAYZ2zuyBRnVuwf_nbNJslyUQ"/>
+</div>
+<div>
+<h4 class="font-bold text-slate-900">The Psychology of Money</h4>
+<p class="text-xs text-on-surface-variant">Issued to <span class="font-semibold text-slate-700">Eleanor Vance</span></p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900">2 mins ago</p>
+<span class="text-[10px] uppercase font-bold tracking-wider text-on-tertiary-container bg-tertiary-container px-2 py-0.5 rounded-sm">New Issue</span>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="flex items-center justify-between p-2 bg-transparent hover:bg-surface-container-lowest rounded-xl transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded-md bg-slate-200 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Hardcover book with dark leather texture and gold embossed title 'Meditations' on a wooden surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqLj26eUtaefatxx6gRQRlPvkmN5bWEEJVs72yskIld9lE1mWBvpkdeNpey3IFzI1gi4rjgq0J5oM5hKoDdBSsuXP4kYdn1WsbjVCREA7mUiTanuyUO8Yo_aVRtRWvXC6aHlLYKkx-JsoBoljNzYB9rOCcRbZzpVabQzLB0GNrnIzQ1QU6goxOoiRyahiXLgMUf4OpBsnLPrCiDSuRT_Y76s3Qp-k8k7h9YBgVFg6TqLg5godnHFqKpZvBdwhJ1Ugoe0LViRsh964"/>
+</div>
+<div>
+<h4 class="font-bold text-slate-900">Meditations</h4>
+<p class="text-xs text-on-surface-variant">Returned by <span class="font-semibold text-slate-700">Marcus Wright</span></p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900">14 mins ago</p>
+<span class="text-[10px] uppercase font-bold tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-sm">Returned</span>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="flex items-center justify-between p-2 bg-transparent hover:bg-surface-container-lowest rounded-xl transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded-md bg-slate-200 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Old classic literature book with worn pages and a vintage fabric bookmark resting on a mahogany table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgq1wW5ZYKAQYozdk38toZ57G1s3FvAQW5QTcWcvhfSzhPn7RrGaHgvLGA5N_oczAnF9nX9iQ_qRMP0LSHkEEHDKiXDMDqniagamCEfwM6tOx7b8OLfH-Ao4NlTJyTW1grIXXIOg47agyGuhCtwnVuh5NtuFCdIhfwWOCX8Jr80JdRfiXupzB2mRZEkPW-5-PZyrnsiN_fx3k0qNC90dMohOfL7UyngABv2E6E3O3e6cFGsd3tNTH82skdXhTkD1Zdr9z92BgvEjU"/>
+</div>
+<div>
+<h4 class="font-bold text-slate-900">The Great Gatsby</h4>
+<p class="text-xs text-on-surface-variant">Issued to <span class="font-semibold text-slate-700">Sarah Jenkins</span></p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900">1 hour ago</p>
+<span class="text-[10px] uppercase font-bold tracking-wider text-on-tertiary-container bg-tertiary-container px-2 py-0.5 rounded-sm">New Issue</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Featured Collection (40%) -->
+<div class="lg:col-span-4 bg-primary text-white rounded-xxl p-8 relative overflow-hidden flex flex-col justify-between">
+<!-- Background Design -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+<div>
+<span class="label-md text-[10px] font-bold uppercase tracking-[0.2em] opacity-70 mb-4 block">Curator's Choice</span>
+<h3 class="text-3xl font-extrabold mb-4 leading-tight">Managing Digital Knowledge</h3>
+<p class="text-primary-fixed text-sm opacity-90 leading-relaxed">Discover the latest methodologies for organizing expansive digital libraries in the modern age.</p>
+</div>
+<div class="relative z-10 mt-12 bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center gap-4 border border-white/10 hover:bg-white/20 transition-all cursor-pointer">
+<div class="w-12 h-12 bg-white text-primary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+<div>
+<p class="font-bold text-sm">Archival Training</p>
+<p class="text-[10px] opacity-70 uppercase tracking-wider">Module 01: Sorting Logic</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="flex justify-between items-center px-12 py-6 bg-slate-50 dark:bg-slate-900 mt-auto ml-0">
+<p class="font-inter text-[10px] tracking-wide uppercase text-slate-400 dark:text-slate-500">© 2024 The Curated Archive. All rights reserved.</p>
+<div class="flex gap-8">
+<a class="font-inter text-[10px] tracking-wide uppercase text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-colors opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="font-inter text-[10px] tracking-wide uppercase text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="font-inter text-[10px] tracking-wide uppercase text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-colors opacity-80 hover:opacity-100" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<script type="module" src="../js/main.js"></script>
+</body></html>

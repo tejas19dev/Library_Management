@@ -5,8 +5,10 @@ const API_BASE_URL = 'http://localhost:4000'; // Make sure this matches your bac
  */
 async function fetchAPI(endpoint, options = {}) {
     // Default headers
+    const token = localStorage.getItem('token');
     const headers = {
         'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         ...options.headers,
     };
 

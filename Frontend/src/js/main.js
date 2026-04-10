@@ -1,0 +1,326 @@
+import { fetchAPI, showToast } from './api.js';
+import { checkAuth, login, parseJwt, logout } from './auth.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Setup Global Logout Listeners
+    document.querySelectorAll('[data-icon="logout"]').forEach(el => {
+        const link = el.closest('a') || el.closest('button');
+        if (link) {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        }
+    });
+
+    const path = window.location.pathname;
+
+    // Route logic
+    if (path.includes('login_page.html')) {
+        initLogin();
+    } else if (path.includes('books_catalog.html')) {
+        checkAuth();
+        initBooksCatalog();
+    } else if (path.includes('dashboard.html')) {
+        checkAuth(true); // requires admin
+        initDashboard();
+    } else if (path.includes('issue_return_mgmt.html')) {
+        checkAuth(true); // admin normally handles this table, or change if users can view
+        initTransactions();
+    } else if (path.includes('admin_add_edit_book.html')) {
+        checkAuth(true);
+        initAddBook();
+    } else if (path.includes('user_profile.html')) {
+        checkAuth();
+        initUserProfile();
+    } else if (path.includes('issue.html')) {
+        checkAuth(true);
+        initManualIssue();
+    }
+});
+
+// -------------- PAGE SPECIFIC LOGIC --------------
+
+function initLogin() {
+    const form = document.querySelector("form");
+    if (!form) return;
+
+    // Check if URL has access_token from Supabase OAuth
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const token = hashParams.get('access_token');
+    
+    if (token) {
+        localStorage.setItem('token', token);
+        const decoded = parseJwt(token);
+        if (decoded?.role === 'admin') {
+            window.location.href = 'dashboard.html';
+        } else {
+            window.location.href = 'books_catalog.html';
+        }
+        return;
+    }
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const submitBtn = form.querySelector("button[type='submit']");
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = "Authenticating...";
+        submitBtn.disabled = true;
+
+        try {
+            await login(email, password);
+        } catch (error) {
+            // Toast automatically handled by fetchAPI
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+function initBooksCatalog() {
+    const container = document.getElementById('books-grid');
+    if (!container) return;
+
+    window.issueBook = async (bookId) => {
+        try {
+            await fetchAPI('/transactions/issue', {
+                method: 'POST',
+                body: { book_id: bookId }
+            });
+            loadBooks(); // refresh
+        } catch(err) {
+            // handlded by toast
+        }
+    };
+
+    async function loadBooks(query = '') {
+        container.innerHTML = `<div class='col-span-full text-center py-10'><div class='w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4'></div><p class='text-on-surface-variant font-medium'>Fetching the archive...</p></div>`;
+        try {
+            const url = query ? `/books/search?query=${encodeURIComponent(query)}` : `/books`;
+            const payload = await fetchAPI(url, {}, true); // silent load to avoid spinner overlay spam
+            let books = [];
+            // Handle if backend wraps in { books: [] } or returns []
+            if (Array.isArray(payload)) {
+                books = payload;
+            } else if (payload && Array.isArray(payload.books)) {
+                books = payload.books;
+            } else {
+                books = payload.data || [];
+            }
+            
+            container.innerHTML = "";
+            if (books.length === 0) {
+                container.innerHTML = "<p class='col-span-full text-center py-10 text-on-surface-variant'>No works found in the archive.</p>";
+                return;
+            }
+
+            books.forEach(book => {
+                const stockVal = Number(book.available_quantity) || 0;
+                const statusHtml = stockVal > 0 
+                  ? `<span class="inline-flex items-center px-4 py-1.5 rounded-full bg-tertiary-container text-xs font-black text-on-tertiary-container uppercase tracking-tight shadow-sm border border-tertiary-container/50"><span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container mr-2 animate-pulse"></span>Available</span>`
+                  : `<span class="inline-flex items-center px-4 py-1.5 rounded-full bg-error-container text-xs font-black text-on-error-container uppercase tracking-tight shadow-sm border border-error-container/50"><span class="w-1.5 h-1.5 rounded-full bg-on-error-container mr-2"></span>Checked Out</span>`;
+
+                container.innerHTML += `
+<div class="group bg-surface-container-lowest rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 border border-outline-variant/10 hover:border-primary/20 flex flex-col h-full relative overflow-hidden">
+    <!-- Decorative background element -->
+    <div class="absolute -right-16 -top-16 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+
+    <div class="flex gap-6 mb-8 relative">
+        <div class="w-32 h-44 rounded-xl overflow-hidden shadow-lg shadow-on-surface/10 group-hover:shadow-primary/20 group-hover:-translate-y-2 transition-all duration-500 relative bg-surface-container-low flex items-center justify-center">
+            <!-- Fallback text if no image -->
+            <span class="material-symbols-outlined text-4xl text-on-surface-variant/30">auto_stories</span>
+        </div>
+        <div class="flex-1 pt-2">
+            ${statusHtml}
+            <h3 class="font-headline font-extrabold text-xl text-on-surface mt-4 tracking-tight leading-tight group-hover:text-primary transition-colors">${book.title}</h3>
+            <p class="text-on-surface-variant text-sm font-medium mt-2">${book.author}</p>
+        </div>
+    </div>
+    <div class="mt-auto space-y-4">
+        <div class="flex items-center justify-between">
+            <div class="flex flex-col">
+                <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Category</span>
+                <span class="text-xs font-medium text-on-surface bg-surface-container py-1 px-3 rounded-md mt-1 inline-block">${book.category}</span>
+            </div>
+            <div class="text-right">
+                <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Accession No.</span>
+                <span class="block text-xs font-mono text-on-surface mt-1">${book.isbn || 'N/A'}</span>
+            </div>
+        </div>
+        <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
+            <button class="text-on-surface-variant hover:text-primary transition-colors p-2 -ml-2 rounded-full hover:bg-surface-container flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]" data-icon="bookmark_add">bookmark_add</span>
+            </button>
+            <button onclick="issueBook('${book.id}')" ${stockVal === 0 ? "disabled" : ""} class="bg-on-surface hover:bg-primary text-surface-container-lowest font-headline font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl shadow-md transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group/btn flex items-center gap-2">
+                Issue Asset <span class="material-symbols-outlined text-sm group-hover/btn:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+            </button>
+        </div>
+    </div>
+</div>
+                `;
+            });
+        } catch(err) {
+            container.innerHTML = `<p class='col-span-full text-center py-10 text-error font-medium'>Error loading archive: ${err.message}</p>`;
+        }
+    }
+
+    loadBooks();
+
+    const searchInput = document.querySelector('input[placeholder="Search the archives..."]') || document.querySelector('input[type="text"]');
+    if (searchInput) {
+        let timeout = null;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                loadBooks(e.target.value);
+            }, 500);
+        });
+    }
+}
+
+function initDashboard() {
+    const statsElements = {
+        totalBooks: document.getElementById('stat-total-books'),
+        totalIssued: document.getElementById('stat-issued-books'),
+        overdueItems: document.getElementById('stat-overdue-books')
+    };
+
+    async function loadStats() {
+        try {
+            const data = await fetchAPI('/admin/stats');
+            if (statsElements.totalBooks) statsElements.totalBooks.innerText = data.stats.totalBooks || 0;
+            if (statsElements.totalIssued) statsElements.totalIssued.innerText = data.stats.issuedBooks || 0;
+            if (statsElements.overdueItems) statsElements.overdueItems.innerText = data.stats.overdueBooks || 0;
+        } catch (err) {
+            console.error("Dashboard stats error", err);
+        }
+    }
+    loadStats();
+}
+
+function initTransactions() {
+    const tbody = document.getElementById("transaction-list");
+    if (!tbody) return;
+
+    window.returnBook = async (txnId) => {
+        try {
+            const res = await fetchAPI('/transactions/return', {
+                method: 'POST',
+                body: { transaction_id: txnId }
+            });
+            // Toast automatically handled
+            if (res.fine > 0) showToast('error', `Late fine applied: ₹${res.fine}`);
+            loadTx();
+        } catch (err) {}
+    };
+
+    async function loadTx() {
+        tbody.innerHTML = "<tr><td colspan='6' class='text-center py-4'>Loading history...</td></tr>";
+        try {
+            const history = await fetchAPI("/transactions/history", {}, true);
+            tbody.innerHTML = "";
+            let dataArr = Array.isArray(history) ? history : (history.data || []);
+            
+            if (dataArr.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6' class='text-center py-4'>No recent transactions found.</td></tr>";
+                return;
+            }
+
+            dataArr.forEach(txn => {
+                const isOverdue = txn.status === 'issued' && new Date(txn.due_date) < new Date();
+                const d = new Date(txn.issue_date);
+                const dd = new Date(txn.due_date);
+                
+                const statusUI = txn.status === 'returned' 
+                    ? `<span class="inline-flex items-center px-2 py-1 rounded bg-surface-container-highest text-[10px] font-black uppercase tracking-tight">Returned</span>`
+                    : isOverdue 
+                        ? `<span class="inline-flex items-center px-2 py-1 rounded bg-error-container text-[10px] font-black text-on-error-container uppercase tracking-tight">Overdue</span>`
+                        : `<span class="inline-flex items-center px-2 py-1 rounded bg-tertiary-container text-[10px] font-black text-on-tertiary-container uppercase tracking-tight">Active</span>`;
+
+                const actionBtn = txn.status === 'issued' 
+                    ? `<button onclick="returnBook('${txn.id}')" class="px-4 py-2 bg-primary text-on-primary text-xs font-bold rounded-lg hover:bg-primary-dim transition-colors shadow-sm">Return Asset</button>`
+                    : `<span class="text-xs text-on-surface-variant font-bold">₹${txn.fine_amount || 0} Fine</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="group hover:bg-surface-container-low transition-colors">
+                        <td class="px-6 py-4 bg-surface-container-low rounded-l-xl first:group-hover:bg-transparent">
+                            <p class="font-bold text-on-surface">${txn.books ? txn.books.title : 'Unknown'}</p>
+                            <p class="text-xs text-on-surface-variant font-medium">${txn.books ? txn.books.author : 'Unknown'}</p>
+                        </td>
+                        <td class="px-6 py-4 bg-surface-container-low first:group-hover:bg-transparent">User</td>
+                        <td class="px-6 py-4 bg-surface-container-low first:group-hover:bg-transparent">
+                            <p class="text-sm font-medium">${d.toLocaleDateString()}</p>
+                        </td>
+                        <td class="px-6 py-4 bg-surface-container-low first:group-hover:bg-transparent">
+                            <p class="text-sm font-bold ${isOverdue ? 'text-error' : ''}">${dd.toLocaleDateString()}</p>
+                        </td>
+                        <td class="px-6 py-4 bg-surface-container-low first:group-hover:bg-transparent">${statusUI}</td>
+                        <td class="px-6 py-4 bg-surface-container-low rounded-r-xl text-right first:group-hover:bg-transparent">${actionBtn}</td>
+                    </tr>
+                `;
+            });
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan='6' class='text-center py-4 text-error'>Error: ${err.message}</td></tr>`;
+        }
+    }
+    loadTx();
+}
+
+function initAddBook() {
+    const form = document.getElementById("add-book-form");
+    if(!form) return;
+    
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const categoryVal = document.getElementById('book-category').value;
+        const payload = {
+            title: document.getElementById('book-title').value,
+            author: document.getElementById('book-author').value,
+            category: categoryVal === 'Select Category' ? 'General' : categoryVal,
+            isbn: document.getElementById('book-isbn').value,
+            quantity: parseInt(document.getElementById('book-qty').value)
+        };
+
+        try {
+            await fetchAPI('/books', {
+                method: 'POST',
+                body: payload
+            });
+            form.reset();
+        } catch (err) {}
+    });
+}
+
+function initManualIssue() {
+    // issue.html if it acts as admin_add_edit_book? 
+    // It seems user combined them. We'll reuse initAddBook and initTransactions if elements exist.
+    initAddBook();
+    initTransactions();
+}
+
+function initUserProfile() {
+    // Attempt to load User data using /api/transactions/history
+    // and ideally /api/auth/me if it exists.
+    const historyContainer = document.getElementById("borrow-history-list") || document.querySelector('.col-span-12.lg\\:col-span-7 > div:last-child');
+    
+    async function loadUser() {
+        try {
+            const data = await fetchAPI('/transactions/history', {}, true);
+            let h = Array.isArray(data) ? data : (data.data || []);
+            
+            // For showcase, let's just update the stats in DOM assuming structure:
+            const readCount = h.length;
+            const statsCards = document.querySelectorAll('.grid-cols-2 .bg-tertiary-container p.text-3xl');
+            if(statsCards.length > 0) statsCards[0].innerText = readCount;
+
+        } catch (err) {
+            console.error('Failed to load user profile history', err);
+        }
+    }
+    loadUser();
+}
