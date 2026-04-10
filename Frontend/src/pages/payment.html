@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment | DevLibrary</title>
+    <link rel="stylesheet" href="../styles/payment.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #receipt-modal-content, #receipt-modal-content * { visibility: visible; }
+            #receipt-modal-content { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border: none; }
+            .no-print { display: none !important; }
+        }
+        .receipt-table { width: 100%; margin: 20px 0; border-collapse: collapse; text-align: left; }
+        .receipt-table th, .receipt-table td { padding: 10px; border-bottom: 1px solid #ddd; }
+        .receipt-total { font-size: 18px; font-weight: bold; margin-top: 10px; color: #0b1c2d; text-align: right; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><a href="index1.html" style="color:white; text-decoration:none;">📚 DevLibrary</a></h1>
+        <div class="header-links">
+            <a href="cart.html">Back to Cart</a>
+        </div>
+    </header>
+
+    <div class="payment-container">
+        <!-- Order Summary -->
+        <div class="order-summary-section">
+            <div class="section-title">Order Summary</div>
+            <div id="order-items">
+                <!-- Items injected here by JS -->
+            </div>
+            
+            <div class="price-breakdown">
+                <div class="price-row">
+                    <span>Price (<span id="item-count">0</span> items)</span>
+                    <span>₹<span id="total-price">0</span></span>
+                </div>
+                <div class="price-row">
+                    <span>Delivery Charges</span>
+                    <span style="color: #388e3c;">Free</span>
+                </div>
+                <div class="price-row total-row">
+                    <span>Amount Payable</span>
+                    <span>₹<span id="amount-payable">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Options -->
+        <div class="payment-options-section">
+            <div class="section-title">Payment Options</div>
+
+            <div class="payment-options-list">
+                
+                <!-- UPI -->
+                <label class="payment-option">
+                    <div class="option-header">
+                        <div class="radio-wrapper">
+                            <input type="radio" name="payment_method" value="upi" checked onchange="togglePaymentDetails()">
+                        </div>
+                        <div class="option-title">UPI (Google Pay, PhonePe, Paytm)</div>
+                    </div>
+                    <div class="option-details" id="upi-details">
+                        <div class="input-group">
+                            <input type="text" placeholder="Enter your UPI ID" class="form-input">
+                            <button class="verify-btn">Verify</button>
+                        </div>
+                        <button class="pay-btn" onclick="processPayment()">Pay ₹<span class="btn-amount">0</span></button>
+                    </div>
+                </label>
+
+                <!-- Credit/Debit Card -->
+                <label class="payment-option">
+                    <div class="option-header">
+                        <div class="radio-wrapper">
+                            <input type="radio" name="payment_method" value="card" onchange="togglePaymentDetails()">
+                        </div>
+                        <div class="option-title">Credit / Debit / ATM Card</div>
+                    </div>
+                    <div class="option-details" id="card-details" style="display: none;">
+                        <input type="text" placeholder="Card Number" class="form-input" maxlength="16">
+                        <div class="card-row">
+                            <input type="text" placeholder="MM/YY" class="form-input half" maxlength="5">
+                            <input type="password" placeholder="CVV" class="form-input half" maxlength="3">
+                        </div>
+                        <button class="pay-btn" onclick="processPayment()">Pay ₹<span class="btn-amount">0</span></button>
+                    </div>
+                </label>
+
+                <!-- Net Banking -->
+                <label class="payment-option">
+                    <div class="option-header">
+                        <div class="radio-wrapper">
+                            <input type="radio" name="payment_method" value="netbanking" onchange="togglePaymentDetails()">
+                        </div>
+                        <div class="option-title">Net Banking</div>
+                    </div>
+                    <div class="option-details" id="netbanking-details" style="display: none;">
+                        <select class="form-input select-bank">
+                            <option value="">Select Bank</option>
+                            <option value="sbi">State Bank of India</option>
+                            <option value="hdfc">HDFC Bank</option>
+                            <option value="icici">ICICI Bank</option>
+                            <option value="axis">Axis Bank</option>
+                        </select>
+                        <button class="pay-btn" onclick="processPayment()">Pay ₹<span class="btn-amount">0</span></button>
+                    </div>
+                </label>
+
+                <!-- Cash on Delivery -->
+                <label class="payment-option">
+                    <div class="option-header">
+                        <div class="radio-wrapper">
+                            <input type="radio" name="payment_method" value="cod" onchange="togglePaymentDetails()">
+                        </div>
+                        <div class="option-title">Cash on Delivery</div>
+                    </div>
+                    <div class="option-details" id="cod-details" style="display: none;">
+                        <div class="cod-alert">Please keep exact change ready. You can also pay via UPI at the time of delivery.</div>
+                        <button class="pay-btn" onclick="processPayment()">Confirm Order</button>
+                    </div>
+                </label>
+
+                <!-- QR Code Payment -->
+                <label class="payment-option">
+                    <div class="option-header">
+                        <div class="radio-wrapper">
+                            <input type="radio" name="payment_method" value="qr" onchange="togglePaymentDetails(); generateCheckoutQR();">
+                        </div>
+                        <div class="option-title">QR Code (Scan & Pay)</div>
+                    </div>
+                    <div class="option-details" id="qr-details" style="display: none; text-align: center;">
+                        <div id="checkout-qrcode" style="margin: 10px auto; width: 150px; height: 150px;"></div>
+                        <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Scan using any UPI app (GPay, PhonePe, Paytm)</p>
+                        <button class="pay-btn" onclick="processPayment()">Confirm Payment of ₹<span class="btn-amount">0</span></button>
+                    </div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success & Receipt Modal -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content" id="receipt-modal-content" style="max-width: 500px; text-align: left;">
+            <div class="success-icon no-print" style="margin: 0 auto 10px;">✓</div>
+            <h2 class="no-print" style="text-align: center;">Payment Successful!</h2>
+            
+            <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 20px;">
+                <h3 style="margin-bottom: 5px; color: #0b1c2d;">DevLibrary - Official Receipt</h3>
+                <p><strong>Order ID:</strong> <span id="random-order-id"></span></p>
+                <p><strong>Date:</strong> <span id="receipt-date"></span></p>
+                <p><strong>Payment Method:</strong> <span id="receipt-method"></span></p>
+
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipt-items">
+                        <!-- JS injects receipt items -->
+                    </tbody>
+                </table>
+
+                <div class="receipt-total">Total Amount Paid: ₹<span id="receipt-total-amount">0</span></div>
+            </div>
+
+            <div class="no-print" style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="done-btn" onclick="window.print()" style="background: #212121;">Print Receipt</button>
+                <button class="done-btn" onclick="finishOrder()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load data from cart
+        let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Check if coming from "Buy Now" button
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('buyNow') === 'true') {
+            const buyNowItem = JSON.parse(localStorage.getItem('buyNow'));
+            if(buyNowItem) {
+                cartData = [buyNowItem];
+            }
+        }
+
+        let totalPrice = 0;
+        let totalItems = 0;
+        
+        // Group items for display
+        let groupedCart = [];
+        cartData.forEach(item => {
+            let existingItem = groupedCart.find(i => i.name === item.name);
+            if(existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                groupedCart.push({...item, quantity: 1});
+            }
+        });
+
+        const orderItemsContainer = document.getElementById('order-items');
+        
+        if (groupedCart.length === 0) {
+            orderItemsContainer.innerHTML = '<p style="padding: 20px; color: #878787;">Your cart is empty.</p>';
+        } else {
+            groupedCart.forEach(item => {
+                totalItems += item.quantity;
+                const itemTotal = item.quantity * item.price;
+                totalPrice += itemTotal;
+                
+                orderItemsContainer.innerHTML += `
+                    <div class="summary-item">
+                        <div class="summary-item-title">${item.name} <span style="color:#878787;">(x${item.quantity})</span></div>
+                        <div class="summary-item-price">₹${itemTotal}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Update summaries
+        document.getElementById('item-count').innerText = totalItems;
+        document.getElementById('total-price').innerText = totalPrice;
+        document.getElementById('amount-payable').innerText = totalPrice;
+        
+        // Update all Pay buttons with dynamic amount
+        document.querySelectorAll('.btn-amount').forEach(el => {
+            el.innerText = totalPrice;
+        });
+
+        // Toggle Payment Details based on selection
+        function togglePaymentDetails() {
+            // Hide all
+            document.querySelectorAll('.option-details').forEach(el => el.style.display = 'none');
+            
+            // Show selected
+            const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            document.getElementById(selectedMethod + '-details').style.display = 'block';
+        }
+
+        let checkoutQR = null;
+        function generateCheckoutQR() {
+            const qrContainer = document.getElementById('checkout-qrcode');
+            qrContainer.innerHTML = '';
+            const upiURL = `upi://pay?pa=devlibrary@upi&pn=DevLibrary&tr=ORD${Date.now()}&am=${totalPrice}&cu=INR`;
+            
+            checkoutQR = new QRCode(qrContainer, {
+                text: upiURL,
+                width: 150,
+                height: 150,
+                colorDark : "#0b1c2d",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        // Process Payment and show success modal
+        function processPayment() {
+            if (totalItems === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            // Form Validation before payment
+            const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            let displayMethodName = "";
+            
+            if (selectedMethod === 'upi') {
+                displayMethodName = "UPI";
+                const upiInput = document.getElementById('upi-details').querySelector('input').value;
+                if (!upiInput || upiInput.trim() === '') {
+                    alert("Please enter a valid UPI ID.");
+                    return;
+                }
+            } else if (selectedMethod === 'card') {
+                displayMethodName = "Credit/Debit Card";
+                const cardInputs = document.getElementById('card-details').querySelectorAll('input');
+                const cardNumber = cardInputs[0].value;
+                const cardExpiry = cardInputs[1].value;
+                const cardCvv = cardInputs[2].value;
+                
+                if (!cardNumber || cardNumber.length < 16) {
+                    alert("Please enter a valid 16-digit Card Number.");
+                    return;
+                }
+                if (!cardExpiry || !cardExpiry.includes('/')) {
+                    alert("Please enter a valid Expiry Date (MM/YY).");
+                    return;
+                }
+                if (!cardCvv || cardCvv.length < 3) {
+                    alert("Please enter a valid Security Code (CVV).");
+                    return;
+                }
+            } else if (selectedMethod === 'netbanking') {
+                displayMethodName = "Net Banking";
+                const bankSelection = document.getElementById('netbanking-details').querySelector('select').value;
+                if (!bankSelection || bankSelection === '') {
+                    alert("Please select a bank for Net Banking.");
+                    return;
+                }
+            } else if (selectedMethod === 'cod') {
+                displayMethodName = "Cash on Delivery";
+            } else if (selectedMethod === 'qr') {
+                displayMethodName = "QR Code (UPI)";
+            }
+
+            // Generate receipt details
+            document.getElementById('random-order-id').innerText = 'DL' + Math.floor(Math.random() * 1000000000);
+            document.getElementById('receipt-date').innerText = new Date().toLocaleString();
+            document.getElementById('receipt-method').innerText = displayMethodName;
+            document.getElementById('receipt-total-amount').innerText = totalPrice;
+
+            // Populate receipt items
+            const receiptItemsContainer = document.getElementById('receipt-items');
+            receiptItemsContainer.innerHTML = '';
+            groupedCart.forEach(item => {
+                receiptItemsContainer.innerHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>₹${item.price * item.quantity}</td>
+                    </tr>
+                `;
+            });
+            
+            // Show modal
+            document.getElementById('success-modal').style.display = 'flex';
+            
+            // Clear cart immediately upon successful payment
+            localStorage.removeItem('cart');
+            localStorage.removeItem('buyNow');
+        }
+
+        function finishOrder() {
+            window.location.href = 'books.html';
+        }
+    </script>
+</body>
+</html>

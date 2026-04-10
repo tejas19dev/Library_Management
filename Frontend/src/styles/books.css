@@ -1,0 +1,359 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family:'Segoe UI', sans-serif;
+    background-color: #f4f6f9;
+    display:block;
+    margin:2px;
+}
+header{
+   background-color: #0b1c2d;
+   color:white;
+   height:50px;
+   width:100%;
+   display:flex;
+   align-items:center;
+   justify-content: space-between;
+   padding:10px 40px;
+}
+
+header h1{
+    font-size: 25px;
+}
+
+nav a {
+    color: white;
+    margin-left: 18px;
+    text-decoration: none;
+    font-size: 16px;
+    transition:0.3s;
+}
+
+nav a:hover {
+    /* text-decoration: underline; */
+    color:#00c6a9;
+}
+
+nav a:active{
+    color:#00c6a9;
+    font-weight: bold;
+}
+
+.nav-bar{
+    display:flex;
+    flex-direction: row;
+  
+}
+.nav-bar input{
+    border-radius:8px 0px 0px 8px;
+    padding-left:5px;
+}
+
+.nav-bar:hover{
+    cursor: pointer;
+    border:1px solid #00c6a9;
+    border-radius: 8px;
+}
+
+nav a.active {
+    color:#00c6a9;
+    font-weight: bold;
+}
+.search-btn{
+    height:36px;
+    width:80px;
+    border-radius:0px 8px 8px 0px;
+    background-color:#d3f3f8;
+    font-size:14px;
+}
+.search-btn:active {
+    cursor: progress;
+}
+
+.search-btn:hover{
+    cursor: pointer;
+    background-color:#00c6a9;
+    color:white;
+}
+
+.input{
+    height:auto;
+    width:400px;
+    border-radius: 4px;
+    font-size:14px;
+}
+ 
+.book-ad{
+    position:relative;
+    width:100%;
+    height:auto;
+    overflow: hidden;
+}
+
+.ad-img{
+    width:100%;
+    height:50vh;
+    background-image:linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url("../assets/images/book-ad.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.offer-text{
+    position:absolute;
+    top:40%;
+    left:8%;
+    color:white;
+}
+
+.offer-text p{
+    margin:3px 0px 2px 9px;
+}
+
+.offer-text button{
+    margin:8px;
+    padding:8px 12px;
+    border:1px solid rgb(226, 226, 226);
+    border-radius: 10px;
+    background: transparent;
+    color:white;
+    font-size:14px ;
+}
+
+.offer-text button:hover{
+    background-color: rgb(226, 226, 226);
+    color:#0b1c2d;
+    cursor: pointer;
+}
+.shop-section{
+    width:100%;
+    height: auto; 
+    background-color: #f4f6f9;
+}
+
+.section-title{
+    text-align:center;
+    background: linear-gradient(to left, #e0f7fa, #ffffff);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.container1,.container2,.container3,.container4{
+    width:100%;
+    display:flex;
+    justify-content: center;
+    flex-wrap:wrap;
+    gap:55px;
+    margin-top: 4vh;
+    scroll-behavior: smooth;
+}
+
+.container1 ::-webkit-scrollbar-thumb{
+    background: #3b82f6;
+    border-radius: 10px;
+}
+
+.container1::-webkit-scrollbar{
+    height:8px;
+}
+
+#book1,#book2,#book3,#book4,#book5,#book6,#book7,#book8,#book9,#book10,#book11,#book12,#book13,#book14,#book15,#book16  {
+    height:350px;
+    width:270px;
+    margin-top:15px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+#book1{
+    background-image:url("../assets/images/book1.jpg");
+    background-size:cover;
+}
+#book2{
+    background-image:url("../assets/images/book2.webp");
+    background-size:cover;
+}
+#book3{
+    background-image:url("../assets/images/book3.webp");
+    background-size:cover;
+}
+#book4{
+    background-image:url("../assets/images/book4.webp");
+    background-size:cover;
+}
+.card{
+    min-width:300px;
+    height:400px;
+    /* padding:10px; */
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    transition:0.6s; 
+}
+.card p{
+    font-size:14px;
+    color:rgb(79, 79, 79);
+}
+
+#price{
+    font-size:16px;
+    color:rgb(0, 0, 0);
+    font-weight:bold;
+}
+
+.card a{
+    /* text-decoration: none; */
+    color:#06345d;
+}
+.card a:hover{
+    font-weight: 500;
+    cursor:pointer;
+}
+
+
+#book5{
+    background-image:url("../assets/images/book5.webp");
+    background-size:cover;
+}
+#book6{
+    background-image:url("../assets/images/book6.webp");
+    background-size:cover;
+}
+#book7{
+    background-image:url("../assets/images/book7.webp");
+    background-size:cover;
+}
+#book8{
+    background-image:url("../assets/images/book8.webp");
+    background-size:cover;
+}
+.card{
+    width:300px;
+    height:450px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.book-buttons{
+
+display:flex;
+gap:10px;
+margin-top:10px;
+
+}
+
+.book-buttons a{
+
+text-decoration:none;
+padding:8px 12px;
+border-radius:6px;
+color:white;
+font-size:14px;
+
+}
+
+.cart-btn{
+
+background:#ff9900;
+
+}
+
+.buy-btn{
+
+background:#007bff;
+
+}
+
+.book-buttons a:hover{
+
+opacity:0.8;
+
+}
+
+
+
+
+
+
+
+
+.container3 ::-webkit-scrollbar-thumb{
+    background: #3b82f6;
+    border-radius: 10px;
+}
+
+.container3::-webkit-scrollbar{
+    height:8px;
+}
+
+#book9{
+    background-image:url("../assets/images/book9.webp");
+    background-size:cover;
+}
+#book10{
+    background-image:url("../assets/images/book10.webp");
+    background-size:cover;
+}
+#book11{
+    background-image:url("../assets/images/book11.webp");
+    background-size:cover;
+}
+#book12{
+    background-image:url("../assets/images/book12.webp");
+    background-size:cover;
+}
+
+
+.container4 ::-webkit-scrollbar-thumb{
+    background: #3b82f6;
+    border-radius: 10px;
+}
+
+.container4::-webkit-scrollbar{
+    height:8px;
+}
+
+#book13{
+    background-image:url("../assets/images/book13.webp");
+    background-size:cover;
+}
+#book14{
+    background-image:url("../assets/images/book14.webp");
+    background-size:cover;
+}
+#book15{
+    background-image:url("../assets/images/book15.webp");
+    background-size:cover;
+}
+#book16{
+    background-image:url("../assets/images/book16.webp");
+    background-size:cover;
+}
+
+.book-title {
+    text-align:center;
+    width:80%;
+}
+
+.footer {
+    background: #0b1c2d;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 50px;
+}

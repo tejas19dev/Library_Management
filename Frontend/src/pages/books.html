@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books</title>
+    <link rel="stylesheet" href="../styles/books.css">
+</head>
+<body>
+    <header>
+        <h1><i class="fa-solid fa-book"></i>📚 DevLibrary</h1>
+
+        <div class="nav-bar">
+            <input type="text" placeholder="Search for books" class="input" id="searchInput">
+            <button onclick="searchBooks()" class="search-btn">Search</button>
+        </div>
+
+        <nav>
+            <a href="index1.html">Home</a>
+            <a href="books.html"class="active">Books</a>
+            <a href="members.html">Members</a>
+            <a href="issue.html">Issue Books</a>
+            <a href="contact.html">Contact Us</a>
+        </nav>    
+    </header>
+
+    <section class="book-ad">
+        <div class="ad-img">
+            
+        </div>
+        <div class="offer-text">
+            <h1>🔥Special Library Offer</h1>
+            <p>Get 20% Discount on Technical Books</p>
+            <a href="#explore"><button>Explore Now</button></a>
+        </div>
+    </section>
+
+
+    <section class="shop-section" id="explore">
+        <h2 class="section-title">🔥Trending Books</h2>
+        <div class="containers">
+            <div class="container1">
+                <div class ="card">
+                    <div id="book1">
+                            
+                    </div>
+                    <h4 class="book-title">Information Technology</h4>
+                    <p>Author: Jon Duckett</p>
+                    <p id="price">₹499</p>
+                    <div class="book-buttons">
+
+                    <a class="cart-btn"
+                    onclick="addToCart('Information Technology',499)"
+                    href="cart.html">
+                    Add to Cart
+                    </a>
+
+                    <a class="buy-btn"
+                    onclick="buyNow('Information Technology',499)"
+                    href="cart.html?buyNow=true">
+                    Buy Now
+                    </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book2">
+                        
+                    </div>
+                    <h4 class="book-title">Digital Economics(AI)</h4>
+                    <p>Author: Shahid Siddiqui</p>
+                    <p id="price"> ₹349</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Digital Economics(AI)',349)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Digital Economics(AI)',349)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book3">
+                        
+                    </div>
+                        <h4 class="book-title">AI Engineering</h4>
+                        <p>Author: Chip Huyen</p>
+                        <p id="price">₹599</p>
+                        <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('AI Engineering',599)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('AI Engineering',599)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+
+                </div>
+                <div class ="card">
+                    <div id="book4"> 
+                
+                    </div>
+                        <h4 class="book-title"> The Architecture of computer hardware & System software</h4>
+                        <p>Author: Irv Englander</p>
+                        <p id="price">₹299</p>
+                        <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('The Architecture of computer hardware & System software',299)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('The Architecture of computer hardware & System software',299)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+
+            <div class="container2">
+                <div class ="card">
+                    <div id="book5">
+                        
+                    </div>
+                    <h4 class="book-title">Software Engineering:A Practitioners Approach</h4>
+                    <p>Author: Roger Pressman></p>
+                    <p id="price">₹399</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Software Engineering:A Practitioners Approach',399)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Software Engineering:A Practitioners Approach',399)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book6">
+                        
+                    </div>
+                    <h4 class="book-title">Computer Fundamentals</h4>
+                    <p>Author: Goel</p>
+                    <p id="price">₹449</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Computer Fundamentals',449)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Computer Fundamentals',449)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book7">
+                        
+                    </div>
+                    <h4 class="book-title">Prompt Engineering</h4>
+                    <p>Author: Eric C. Richardson</p>
+                    <p id="price"> ₹649</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Prompt Engineering',649)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Prompt Engineering',649)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book8">
+                        
+                    </div>
+                    <h4 class="book-title">Software Engineering Practice</h4>
+                    <p>Author: Irv Englander</p>
+                    <p id="price"> ₹389</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Software Engineering Practice',389)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Software Engineering Practice',389)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container3">
+                <div class ="card">
+                    <div id="book9">
+                        
+                    </div>
+                    <h4 class="book-title">Beginners Step-by-Step Coding Course</h4>
+                    <p>Author:  DK </p>
+                    <p id="price">₹549</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Beginners Step-by-Step Coding Course',549)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Beginners Step-by-Step Coding Course',549)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book10">
+                        
+                    </div>
+                    <h4 class="book-title">Digital Logic & Computer Design</h4>
+                    <p>Author:  Mano </p>
+                    <p id="price">₹449</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Digital Logic & Computer Design',449)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Digital Logic & Computer Design',449)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book11">
+                        
+                    </div>
+                    <h4 class="book-title">Python</h4>
+                    <p>Author: Dimitrios Xanthidis</p>
+                    <p id="price"> ₹679</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Python',679)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Python',679)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book12">
+                        
+                    </div>
+                    <h4 class="book-title">C Programming Language</h4>
+                    <p>Author: Brian W. Kernighan / Dennis Ritchie</p>
+                    <p id="price"> ₹319</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('C Programming Language',319)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('C Programming Language',319)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="container4">
+                <div class ="card">
+                    <div id="book13">
+                        
+                    </div>
+                    <h4 class="book-title">Practical Deep Learning with PyTorch</h4>
+                    <p>Author: Deepak Gowda</p>
+                    <p id="price">₹554</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Practical Deep Learning with PyTorch',554)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Practical Deep Learning with PyTorch',554)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book14">
+                        
+                    </div>
+                    <h4 class="book-title">Coding For Absolute Beginners</h4>
+                    <p>Author:  Orson Henry </p>
+                    <p id="price">₹429</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Coding For Absolute Beginners',429)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Coding For Absolute Beginners',429)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+                <div class ="card">
+                    <div id="book15">
+                        
+                    </div>
+                    <h4 class="book-title">C,C++,Java,Python</h4>
+                    <p>Author: Dr. Mohd. Abdul Hameed</p>
+                    <p id="price"> ₹609</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('C,C++,Java,Python',609)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('C,C++,Java,Python',609)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>      
+                <div class ="card">
+                    <div id="book16">
+                        
+                    </div>
+                    <h4 class="book-title">Intelligent Decision Support Systems for Sustainable Computing</h4>
+                    <p>Author: Arun Kumar Sangaiah, Ajith Abraham </p>
+                    <p id="price"> ₹389</p>
+                    <div class="book-buttons">
+
+                        <a class="cart-btn"
+                        onclick="addToCart('Intelligent Decision Support Systems for Sustainable Computing',389)"
+                        href="cart.html">
+                        Add to Cart
+                        </a>
+
+                        <a class="buy-btn"
+                        onclick="buyNow('Intelligent Decision Support Systems for Sustainable Computing',389)"
+                        href="cart.html?buyNow=true">
+                        Buy Now
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<div class="footer">
+    © 2026 DevLibrary |  Developed by DevTeam
+</div>
+    <script>
+    function addToCart(name, price) {
+        alert(name + " purchased successfully for ₹" + price);
+    }
+    </script>
+
+
+    <script>
+    function searchBooks() {
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        let containers = document.querySelectorAll(".container1, .container2, .container3, .container4");
+        let firstContainer = document.querySelector(".container1");
+
+    containers.forEach(function(container) {
+        let cards = container.querySelectorAll(".card");
+
+        cards.forEach(function(card) {
+            let title = card.querySelector(".book-title").textContent.toLowerCase();
+
+            if (title.includes(input) && input !== "") {
+                firstContainer.prepend(card);   // 👈 Move to first position
+                card.style.display = "flex";
+            } else if (input === "") {
+                card.style.display = "flex";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+    }
+    </script>
+    
+
+    <script>
+
+    function addToCart(book,price){
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart.push({
+    name:book,
+    price:price
+    });
+
+    localStorage.setItem("cart",JSON.stringify(cart));
+
+    }
+
+    function buyNow(book,price){
+
+    let item={
+    name:book,
+    price:price
+    };
+
+    localStorage.setItem("buyNow",JSON.stringify(item));
+
+    }
+
+    </script>
+
+
+</body>
+</html>

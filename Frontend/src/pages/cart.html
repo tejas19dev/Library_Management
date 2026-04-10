@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | DevLibrary</title>
+    <link rel="stylesheet" href="../styles/cart.css">
+</head>
+<body>
+
+    <header class="fk-header">
+        <a href="books.html" class="back-btn">←</a>
+        <h1>My Cart</h1>
+    </header>
+
+    <div class="cart-container">
+        
+        <!-- Address Bar -->
+        <div class="deliver-to-card">
+            <div class="deliver-info">
+                <span class="deliver-label">Deliver to:</span>
+                <span class="deliver-name">User, 123456</span>
+                <span class="home-tag">HOME</span>
+                <div class="deliver-address" id="current-address">123 Layout Road, Tech Park, City...</div>
+            </div>
+            <button class="change-btn" onclick="changeAddress()">Change</button>
+        </div>
+
+        <div class="cart-left">
+            <div id="cart-container">
+                <!-- Items injected here by JS -->
+            </div>
+        </div>
+
+        <div class="cart-right">
+            <!-- Price Details -->
+            <div class="price-details-card">
+                <div class="price-header">Price Details</div>
+                <div class="price-body">
+                    <div class="price-row">
+                        <span>Price (<span id="price-item-count">0</span> items)</span>
+                        <span>₹<span id="total-price">0</span></span>
+                    </div>
+                    <div class="price-row">
+                        <span>Delivery Charges</span>
+                        <span class="free-delivery">Free</span>
+                    </div>
+                    <div class="price-total">
+                        <span>Total Amount</span>
+                        <span>₹<span id="final-amount">0</span></span>
+                    </div>
+                    <div class="savings-text">
+                        <span class="savings-icon">%</span> You will save money on this order
+                    </div>
+                    <button class="place-order-btn" style="width: 100%; margin-top: 20px; box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);" onclick="placeOrder()">PLACE ORDER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Select Delivery Address Bottom Sheet -->
+    <div class="bottom-sheet-overlay" id="select-address-sheet">
+        <div class="bottom-sheet-content">
+            <div class="sheet-header">
+                <h3>Select delivery address</h3>
+                <span class="close-sheet" onclick="closeAddressSheet()">✕</span>
+            </div>
+            
+            <div class="sheet-body">
+                <div class="saved-addresses-header">
+                    <span>Saved addresses</span>
+                    <button class="add-new-btn" onclick="openEditAddress()">+ Add New</button>
+                </div>
+
+                <div class="address-list" id="address-list-container">
+                    <!-- Items rendered via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit/Add Address Bottom Sheet -->
+    <div class="bottom-sheet-overlay" id="edit-address-sheet">
+        <div class="bottom-sheet-content">
+            <div class="sheet-header">
+                <h3>Deliver To</h3>
+                <span class="close-sheet" onclick="closeEditSheet()">✕</span>
+            </div>
+            <div class="sheet-body form-body">
+                <div class="warning-banner">
+                    <span class="info-icon-small">i</span> Ensure your address details are accurate for a smooth delivery experience
+                </div>
+
+                <!-- GPS Location Button (User Request) -->
+                <button class="use-location-btn" onclick="useCurrentLocation()">
+                    <span>◎</span> Use my current location
+                </button>
+
+                <!-- Floating Label Inputs -->
+                <div class="floating-input">
+                    <input type="text" id="flat-name" required value="st-limpangaon, tal-shrigonda, dist.-Ahilyanagar">
+                    <label>Flat/House/building name *</label>
+                </div>
+
+                <!-- Locality Card -->
+                <div class="floating-input" style="margin-bottom: 5px;">
+                    <input type="text" id="gps-locality" required value="SINHGAD TECHNICAL EDUCATION SOCIETY, Near HEAVENLY EMPIRE">
+                    <label>Area / Sector / Locality</label>
+                </div>
+                <div class="floating-input">
+                    <input type="text" id="gps-city" required value="Pune, Maharashtra, 411046">
+                    <label>City, State, Pincode</label>
+                </div>
+
+                <div class="floating-input">
+                    <input type="text" id="full-name" required value="Tejas Kurumkar">
+                    <label>Enter your full name *</label>
+                </div>
+
+                <div class="floating-input">
+                    <input type="tel" id="mobile-num" required value="7219896345" maxlength="10">
+                    <label>10-digit mobile number *</label>
+                </div>
+                
+                <div class="floating-input">
+                    <input type="text" placeholder=" ">
+                    <label>Alternate phone number (Optional)</label>
+                </div>
+
+                <!-- Type of Address -->
+                <div class="address-type-section">
+                    <label>Type of address</label>
+                    <div class="type-buttons">
+                        <button class="type-btn active">⌂ Home</button>
+                        <button class="type-btn">🏢 Work</button>
+                    </div>
+                </div>
+                
+                <button class="save-address-btn" onclick="saveNewAddress()">Update address</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load cart from LocalStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Group identical items into quantities
+        let groupedCart = [];
+        cart.forEach(item => {
+            let existingItem = groupedCart.find(i => i.name === item.name);
+            if(existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                groupedCart.push({...item, quantity: 1});
+            }
+        });
+
+        // Check if coming from "Buy Now" button
+        const urlParams = new URLSearchParams(window.location.search);
+        let isBuyNow = false;
+        if(urlParams.get('buyNow') === 'true') {
+            isBuyNow = true;
+            const buyNowItem = JSON.parse(localStorage.getItem('buyNow'));
+            if(buyNowItem) {
+                // Ignore regular cart and just show the buy now item
+                groupedCart = [{...buyNowItem, quantity: 1}];
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-container');
+            const priceItemCount = document.getElementById('price-item-count');
+            const totalPriceElement = document.getElementById('total-price');
+            const finalAmountElement = document.getElementById('final-amount');
+
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            if (groupedCart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart-card">
+                        <img src="https://rukminim2.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90" alt="Empty Cart" style="width:150px; margin-bottom:20px;">
+                        <h2>Your cart is empty!</h2>
+                        <p style="margin-top: 10px; color:#878787;">Add items to it now.</p>
+                        <a href="books.html" class="shop-now-btn">Shop now</a>
+                    </div>
+                `;
+                document.querySelector('.cart-right').style.display = 'none';
+                document.querySelector('.deliver-to-card').style.display = 'none';
+            } else {
+                container.innerHTML = '';
+                document.querySelector('.cart-right').style.display = 'block';
+                document.querySelector('.deliver-to-card').style.display = 'flex';
+                
+                groupedCart.forEach((item, index) => {
+                    totalItems += item.quantity;
+                    totalPrice += (item.price * item.quantity);
+                    
+                    // Fake original MRP for visual
+                    let mrp = Math.floor(item.price * 1.4);
+
+                    // Determine aesthetic based on item type/name
+                    let icon = '📘';
+                    let typeTag = 'Book';
+                    let nameLower = item.name.toLowerCase();
+                    if(nameLower.includes('fine')) { icon = '⚠️'; typeTag = 'Due Fine'; }
+                    else if(nameLower.includes('rent')) { icon = '📅'; typeTag = 'Rental Charge'; }
+
+                    container.innerHTML += `
+                        <div class="cart-item-card">
+                            <div class="item-top">
+                                <div class="item-img">
+                                    <div class="book-placeholder" style="font-size: 30px;">${icon}</div>
+                                    <div style="font-size: 11px; margin-top: 5px; color: #888; text-align: center;">${typeTag}</div>
+                                </div>
+                                <div class="item-details" style="padding-left: 20px;">
+                                    <div class="item-title">${item.name}</div>
+                                    <div class="item-seller">Type: ${typeTag}</div>
+                                    <div class="qty-dropdown" style="margin-top: 5px;">
+                                        Qty: 
+                                        <select onchange="updateQtySelect(${index}, this.value)" style="padding: 2px;">
+                                            <option value="1" ${item.quantity == 1 ? 'selected' : ''}>1</option>
+                                            <option value="2" ${item.quantity == 2 ? 'selected' : ''}>2</option>
+                                            <option value="3" ${item.quantity == 3 ? 'selected' : ''}>3</option>
+                                            <option value="4" ${item.quantity == 4 ? 'selected' : ''}>4</option>
+                                            <option value="5" ${item.quantity == 5 ? 'selected' : ''}>5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="item-details">
+                                    <div class="item-title">${item.name}</div>
+                                    <div class="item-seller">Seller: DevLibrary</div>
+                                    <div class="item-price-row" style="margin-top: 8px;">
+                                        <span class="mrp">₹${mrp * item.quantity}</span>
+                                        <span class="price">₹${item.price * item.quantity}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <button class="action-btn" onclick="removeItem(${index})"><span class="icon">🗑️</span> Remove</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Update Summaries
+            if(totalItems > 0) {
+                // Assuming fake MRP across all is 1.4x
+                let totalMrp = Math.floor(totalPrice * 1.4);
+
+                priceItemCount.innerText = totalItems;
+                totalPriceElement.innerText = totalPrice;
+                finalAmountElement.innerText = totalPrice;
+            }
+
+            // Sync back flat structure to localStorage
+            syncToLocalStorage();
+        }
+
+        function updateQtySelect(index, val) {
+            groupedCart[index].quantity = parseInt(val);
+            renderCart();
+        }
+
+        function updateQty(index, change) {
+            if(groupedCart[index].quantity + change >= 1) {
+                groupedCart[index].quantity += change;
+                renderCart();
+            }
+        }
+
+        function removeItem(index) {
+            groupedCart.splice(index, 1);
+            if(isBuyNow) {
+                localStorage.removeItem('buyNow');
+                window.location.href = 'books.html';
+                return;
+            }
+            renderCart();
+        }
+
+        function syncToLocalStorage() {
+            if (isBuyNow) return; // don't sync normal cart if we are just viewing buyNow
+            let flatCart = [];
+            groupedCart.forEach(item => {
+                for(let i=0; i<item.quantity; i++) {
+                    flatCart.push({ name: item.name, price: item.price });
+                }
+            });
+            localStorage.setItem('cart', JSON.stringify(flatCart));
+        }
+
+        // --- Address Flow Logic ---
+        // Setup initial default addresses if empty
+        let savedAddresses = JSON.parse(localStorage.getItem('savedAddresses'));
+        if(!savedAddresses || savedAddresses.length === 0) {
+            savedAddresses = [
+                { id: 1, name: 'Tejas Kurumkar', address: 'At-mundhekarwadi, post-limpangaon, tal-shrigonda...', area: '', city_pin: '413726', icon: '⌂', isSelected: true },
+                { id: 2, name: 'Tejas Kurumkar', address: 'Vadgaon', area: 'SINHGAD TECHNICAL EDUCATION S...', city_pin: '411041', icon: '⌂', isSelected: false },
+                { id: 3, name: 'Tejas Kurumkar', address: 'Flat No.405,4th floor, B Wing,chandrai capital', area: 'SINHGAD TECHNICAL EDUCATION SOCIETY', city_pin: 'Pune, Maharashtra, 411046', icon: '◎', isSelected: false }
+            ];
+            localStorage.setItem('savedAddresses', JSON.stringify(savedAddresses));
+        }
+
+        let editModeId = null;
+
+        function renderAddresses() {
+            const container = document.getElementById('address-list-container');
+            container.innerHTML = '';
+            
+            savedAddresses.forEach((addr, i) => {
+                let badgeHtml = addr.isSelected ? '<span class="selected-badge">Currently selected</span>' : '';
+                let activeClass = addr.isSelected ? 'active-address' : '';
+                
+                // Keep the UI header updated if it's the selected one
+                if(addr.isSelected) {
+                    let pinStr = addr.city_pin ? addr.city_pin.split(',').pop().trim() : '';
+                    document.querySelector('.deliver-name').innerText = addr.name + ', ' + pinStr;
+                    document.getElementById('current-address').innerText = addr.address + (addr.area ? ', '+addr.area : '');
+                }
+
+                container.innerHTML += `
+                    <div class="address-item ${activeClass}" id="address-${addr.id}" onclick="selectAddress(${addr.id})">
+                        <div class="addr-icon">${addr.icon}</div>
+                        <div class="addr-details">
+                            <div class="addr-name-row">
+                                <span class="addr-name">${addr.name}</span>
+                                ${badgeHtml}
+                            </div>
+                            <div class="addr-text">${addr.address} ${addr.area ? ', '+addr.area : ''}</div>
+                        </div>
+                        <span class="addr-options" onclick="toggleAddressMenu(event, ${addr.id})">•••</span>
+                        <div class="address-menu" id="addr-menu-${addr.id}">
+                            <div onclick="editAddress(event, ${addr.id})">✎ Edit</div>
+                            <div onclick="deleteAddress(event, ${addr.id})" style="color:#e53935;">🗑 Delete</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Run initially
+        renderAddresses();
+
+        function changeAddress() {
+            renderAddresses();
+            document.getElementById('select-address-sheet').style.display = 'flex';
+        }
+
+        function closeAddressSheet() {
+            document.getElementById('select-address-sheet').style.display = 'none';
+        }
+
+        function openEditAddress() {
+            editModeId = null;
+            document.getElementById('full-name').value = "";
+            document.getElementById('flat-name').value = "";
+            document.getElementById('gps-locality').value = "";
+            document.getElementById('gps-city').value = "";
+            document.querySelector('.sheet-header h3').innerText = "Deliver To";
+            
+            document.getElementById('select-address-sheet').style.display = 'none';
+            document.getElementById('edit-address-sheet').style.display = 'flex';
+        }
+
+        function closeEditSheet() {
+            document.getElementById('edit-address-sheet').style.display = 'none';
+        }
+
+        function selectAddress(id) {
+            savedAddresses.forEach(addr => addr.isSelected = false);
+            const selected = savedAddresses.find(a => a.id === id);
+            if(selected) selected.isSelected = true;
+            
+            localStorage.setItem('savedAddresses', JSON.stringify(savedAddresses));
+            renderAddresses();
+            closeAddressSheet();
+        }
+
+        function saveNewAddress() {
+            const fullName = document.getElementById('full-name').value;
+            const flat = document.getElementById('flat-name').value;
+            const area = document.getElementById('gps-locality').value;
+            const city = document.getElementById('gps-city').value;
+            
+            if(!fullName || !flat || !city) {
+                alert("Please fill required fields (Name, Flat/House, City)");
+                return;
+            }
+
+            if(editModeId !== null) {
+                // Update existing
+                const index = savedAddresses.findIndex(a => a.id === editModeId);
+                if(index > -1) {
+                    savedAddresses[index].name = fullName;
+                    savedAddresses[index].address = flat;
+                    savedAddresses[index].area = area;
+                    savedAddresses[index].city_pin = city;
+                }
+            } else {
+                // Add new
+                savedAddresses.forEach(addr => addr.isSelected = false);
+                savedAddresses.push({
+                    id: Date.now(),
+                    name: fullName,
+                    address: flat,
+                    area: area,
+                    city_pin: city,
+                    icon: '⌂',
+                    isSelected: true
+                });
+            }
+
+            localStorage.setItem('savedAddresses', JSON.stringify(savedAddresses));
+            renderAddresses();
+            closeEditSheet();
+        }
+
+        function toggleAddressMenu(event, id) {
+            event.stopPropagation(); // prevent selecting the address on click
+            
+            document.querySelectorAll('.address-menu').forEach(menu => {
+                if(menu.id !== 'addr-menu-' + id) menu.style.display = 'none';
+            });
+
+            const menu = document.getElementById('addr-menu-' + id);
+            if(menu) menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.matches('.addr-options')) {
+                document.querySelectorAll('.address-menu').forEach(menu => {
+                    menu.style.display = 'none';
+                });
+            }
+        });
+
+        function editAddress(event, id) {
+            event.stopPropagation(); 
+            const addrToEdit = savedAddresses.find(a => a.id === id);
+            if(!addrToEdit) return;
+
+            editModeId = id;
+            document.getElementById('full-name').value = addrToEdit.name;
+            document.getElementById('flat-name').value = addrToEdit.address;
+            document.getElementById('gps-locality').value = addrToEdit.area || "";
+            document.getElementById('gps-city').value = addrToEdit.city_pin || "";
+            
+            document.querySelector('.sheet-header h3').innerText = "Edit Address";
+            
+            closeAddressSheet();
+            document.getElementById('edit-address-sheet').style.display = 'flex';
+        }
+
+        function deleteAddress(event, id) {
+            event.stopPropagation();
+            if(confirm("Are you sure you want to permanently delete this address?")) {
+                savedAddresses = savedAddresses.filter(a => a.id !== id);
+                
+                // If we deleted the selected one, auto-select the first remaining
+                if(savedAddresses.length > 0 && !savedAddresses.some(a => a.isSelected)) {
+                    savedAddresses[0].isSelected = true;
+                }
+                
+                localStorage.setItem('savedAddresses', JSON.stringify(savedAddresses));
+                renderAddresses();
+            }
+        }
+
+        function useCurrentLocation() {
+            if ("geolocation" in navigator) {
+                document.getElementById('gps-locality').value = "Locating GPS coordinates...";
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Simulate geocoding delay
+                    setTimeout(() => {
+                        document.getElementById('gps-locality').value = "GPS Location Generated Area";
+                        document.getElementById('gps-city').value = "Pune, Maharashtra, 411046";
+                    }, 800);
+                });
+            } else {
+                alert("Geolocation is not supported by your browser");
+            }
+        }
+
+        function placeOrder() {
+            // Check if we are checking out a single buyNow item
+            if(isBuyNow) {
+                window.location.href = "payment.html?buyNow=true";
+            } else {
+                window.location.href = "payment.html";
+            }
+        }
+
+        // Initial render
+        renderCart();
+    </script>
+</body>
+</html>

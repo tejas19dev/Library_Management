@@ -1,0 +1,8 @@
+node_modules/
+Backend/.env
+Backend/node_modules/
+.env
+.npm
+build/
+dist/
+.DS_Store

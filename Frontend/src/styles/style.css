@@ -1,0 +1,189 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    margin: 4px;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f6f8;
+}
+
+header {
+    width: 100%;
+    background-color: #0b1c2d;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height:50px;
+}
+
+header h1 {
+    font-size: 24px;
+}
+
+nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+}
+
+nav a:hover {
+    color:#00c6a9;
+}
+nav a:active {
+    font-weight: bold;
+}
+
+nav a.active {
+    color:#00c6a9;
+    font-weight: bold;
+}
+.hero {
+    margin:0;
+    background-color: #3498db;
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+    background-image: url("../assets/images/lab.jpg");
+    background-size: cover;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero h2,p{
+    margin: 2px 0;
+}
+
+.view-btn{
+    padding: 10px 20px;
+    border: none;
+    background-color: #263540;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 20px;
+    margin-top:8px;
+    text-decoration: none;
+}
+
+.view-btn:hover {
+    background-color: #040f16;
+}
+.view-btn:active {
+    cursor: progress;
+}
+
+.available-books {
+    padding: 40px 20px;
+    text-align: center;
+    width:100%;
+}
+
+.available-books h2 {
+    color: #0b1c2d;
+    margin-bottom: 20px;
+}
+
+.available-books h2 {
+    margin-bottom: 20px;
+}
+
+.table-container{
+    width:80%;
+    border-radius: 15px;
+    overflow: hidden;
+    border:1px solid #ccc;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+
+}
+
+table {
+    margin:0px;
+    border-collapse: collapse;
+    width: 100%; 
+    background: linear-gradient(to left, #f7feff, #ffffff, #eef9fb);
+    border-radius:20px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #0b1c2d;
+    color: white;
+}
+
+form {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+}
+.issue-container h2{
+    margin-bottom: 10px;
+}
+
+.issue-container {
+    width:100%;
+    padding: 40px;
+    text-align: center;
+    font-size: 16px;
+    background:linear-gradient(to bottom, #f7feff, #ffffff, #eef9fb);
+}
+form input {
+    width: 95%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #929191;
+}
+
+form button {
+    width: 100%;
+    padding: 10px;
+    margin-top:20px;
+    margin-bottom:20px;
+    background-color: #040f16;
+    color: white;
+    font-size: 16px;
+    border-radius:20px;
+    cursor: pointer;
+}
+
+form button:hover{
+    transition-duration: 0.5s;
+    background-color:#00c6a9;
+    border:2px solid #1e6594;
+}
+
+footer p{
+    background-color: #0b1c2d;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+}
+form button:hover {
+    border:1px solid #1e6594;
+    cursor: pointer;
+}
+form button:active {
+    cursor: progress;
+}
+nav a:active {
+    cursor: progress;
+}
+button:active{
+    cursor: progress;
+}
