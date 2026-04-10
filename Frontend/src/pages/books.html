@@ -458,33 +458,45 @@
     </script>
     
 
+    <script src="../utils/api.js"></script>
     <script>
 
-    function addToCart(book,price){
+    async function addToCart(book,price){
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        // LOCAL STORAGE (Current)
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.push({
+            name:book,
+            price:price
+        });
+        localStorage.setItem("cart",JSON.stringify(cart));
 
-    cart.push({
-    name:book,
-    price:price
-    });
-
-    localStorage.setItem("cart",JSON.stringify(cart));
-
+        // BACKEND INTEGRATION (Ready but disabled until backend route exists)
+        /*
+        try {
+            await window.API.post('/api/cart', { name: book, price: price });
+            console.log('Successfully saved to backend database');
+        } catch(e) {
+            console.error('Failed to save to backend', e);
+        }
+        */
     }
 
     function buyNow(book,price){
 
-    let item={
-    name:book,
-    price:price
-    };
+        let item={
+            name:book,
+            price:price
+        };
 
-    localStorage.setItem("buyNow",JSON.stringify(item));
+        localStorage.setItem("buyNow",JSON.stringify(item));
 
+        // Backend Integration example:
+        // window.API.post('/api/orders', item);
     }
 
     </script>
+
 
 
 </body>
