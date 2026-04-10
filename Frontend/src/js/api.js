@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:4000/api'; // Or 5000, verify backend port
+const API_BASE_URL = 'http://localhost:4000/api';
 
 /**
  * Creates and shows a UI Loading Spinner
