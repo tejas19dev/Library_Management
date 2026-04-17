@@ -6,11 +6,10 @@ export const issueBook = async (req, res) => {
 
     if (!book_id) return res.status(400).json({ error: "book_id is required" });
 
-    // 1. Check availability
-    const { data: book, error: bookError } = await supabase.from('books').select('*').eq('id', book_id).single();
+    // 1. Check book exists
+    const { data: book, error: bookError } = await supabase.from('book_info').select('*').eq('id', book_id).single();
     
     if (bookError || !book) return res.status(404).json({ error: "Book not found" });
-    if (book.available_quantity <= 0) return res.status(400).json({ error: "Book out of stock" });
 
     // 2. Insert transaction
     const dueDate = new Date();
@@ -24,13 +23,6 @@ export const issueBook = async (req, res) => {
     }]).select().single();
 
     if (txnError) return res.status(500).json({ error: txnError.message });
-
-    // 3. Decrement available_quantity
-    const { error: updateError } = await supabase.from('books').update({ 
-        available_quantity: book.available_quantity - 1 
-    }).eq('id', book_id);
-
-    if (updateError) return res.status(500).json({ error: "Failed to update internal quantities" });
 
     res.status(201).json({ message: "Book issued successfully", transaction });
 };
@@ -78,14 +70,6 @@ export const returnBook = async (req, res) => {
 
     if (updateError) return res.status(500).json({ error: updateError.message });
 
-    // Increment available_quantity
-    const { data: book } = await supabase.from('books').select('available_quantity').eq('id', transaction.book_id).single();
-    if (book) {
-        await supabase.from('books').update({ 
-            available_quantity: book.available_quantity + 1 
-        }).eq('id', transaction.book_id);
-    }
-
     res.json({ message: "Book returned successfully", fine, transaction: updatedTxn });
 };
 
@@ -103,7 +87,7 @@ export const getHistory = async (req, res) => {
 
     const { data: history, error } = await supabase
         .from('transactions')
-        .select('*, books(title, author)')
+        .select('*, book_info(title, author, cover_image_url, category)')
         .eq('user_id', queryId)
         .order('issue_date', { ascending: false });
 

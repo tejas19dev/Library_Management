@@ -8,7 +8,7 @@ export const addReview = async (req, res) => {
     if (rating < 1 || rating > 5) return res.status(400).json({ error: "Rating must be between 1 and 5" });
 
     // Ensure the book exists
-    const { data: book, error: bookError } = await supabase.from('books').select('id').eq('id', book_id).single();
+    const { data: book, error: bookError } = await supabase.from('book_info').select('id').eq('id', book_id).single();
     if (bookError || !book) return res.status(404).json({ error: "Book not found" });
 
     const { data: review, error } = await supabase.from('reviews').insert([{

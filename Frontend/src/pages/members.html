@@ -45,41 +45,18 @@
         <h3>Members List</h3>
 
         <table id="membersTable">
+            <thead>
             <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Phone</th>
-                <th>Fine (₹)</th>
-                <th>Action</th>
+                <th>Role</th>
+                <th>Joined</th>
             </tr>
-
-            <tr>
-                <td>101</td>
-                <td>Rahul Sharma</td>
-                <td>rahul@gmail.com</td>
-                <td>9876543210</td>
-                <td class="fine-amount">50</td>
-                <td><button class="pay-fine-btn" onclick="openQRModal(101, 'Rahul Sharma', 50, this)">Pay Fine</button></td>
-            </tr>
-
-            <tr>
-                <td>102</td>
-                <td>Anjali Patil</td>
-                <td>anjali@gmail.com</td>
-                <td>9123456780</td>
-                <td class="fine-amount fine-zero">0</td>
-                <td><button class="pay-fine-btn" onclick="openQRModal(102, 'Anjali Patil', 0, this)" disabled>No Fine</button></td>
-            </tr>
-
-            <tr>
-                <td>103</td>
-                <td>Tejas Kurumkar</td>
-                <td>tejas@gmail.com</td>
-                <td>9988776655</td>
-                <td class="fine-amount">150</td>
-                <td><button class="pay-fine-btn" onclick="openQRModal(103, 'Tejas Kurumkar', 150, this)">Pay Fine</button></td>
-            </tr>
+            </thead>
+            <tbody id="members-tbody">
+                <tr><td colspan="5" class="text-center">Loading...</td></tr>
+            </tbody>
 
         </table>
     </div>
@@ -107,6 +84,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script type="module" src="../js/main.js"></script>
 <script>
     let currentPayButton = null;
     let qrGenerator = null;

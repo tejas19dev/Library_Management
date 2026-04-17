@@ -3,7 +3,7 @@ import { supabase } from '../utils/supabase.js';
 export const getStats = async (req, res) => {
     try {
         // 1. Total books
-        const { count: booksCount } = await supabase.from('books').select('*', { count: 'exact', head: true });
+        const { count: booksCount } = await supabase.from('book_info').select('*', { count: 'exact', head: true });
         
         // 2. Total users
         const { count: usersCount } = await supabase.from('users').select('*', { count: 'exact', head: true });
@@ -30,5 +30,21 @@ export const getStats = async (req, res) => {
     } catch (err) {
         console.error("Dashboard Stats Error:", err);
         res.status(500).json({ error: "Failed to fetch dashboard stats" });
+    }
+};
+
+// GET /api/users — list all users (admin only)
+export const getUsers = async (req, res) => {
+    try {
+        const { data: users, error } = await supabase
+            .from('users')
+            .select('id, email, full_name, role, created_at')
+            .order('created_at', { ascending: false });
+
+        if (error) return res.status(500).json({ error: error.message });
+        res.json({ users });
+    } catch (err) {
+        console.error('getUsers error:', err);
+        res.status(500).json({ error: 'Failed to fetch users' });
     }
 };

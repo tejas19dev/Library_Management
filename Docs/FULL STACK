@@ -1,0 +1,96 @@
+# Full-Stack Frontend ↔ Backend Integration Plan
+
+## Overview
+The backend (Node/Express/Supabase) and frontend (static HTML + ES modules) are mostly wired together already. The remaining work is:
+1. Fill gaps in the backend (missing `/auth/me` endpoint, `review` table references wrong table name)
+2. Consolidate the two competing API files into one solid [utils/api.js](file:///d:/HTML/Library_Management/Frontend/src/utils/api.js)
+3. Wire each of the 7 HTML pages to use the backend instead of hardcoded/localStorage data
+
+---
+
+## Backend Changes
+
+### 1. [authRoutes.js](file:///d:/HTML/Library_Management/Backend/routers/authRoutes.js) + [authController.js](file:///d:/HTML/Library_Management/Backend/controllers/authController.js) — Add `/me` endpoint
+Missing endpoint that frontend needs to show logged-in user info on profile page.
+
+#### [MODIFY] [authRoutes.js](file:///d:/HTML/Library_Management/Backend/routers/authRoutes.js)
+Add `GET /me` route (protected by JWT).
+
+#### [MODIFY] [authController.js](file:///d:/HTML/Library_Management/Backend/controllers/authController.js)
+Add `getMe` function: fetches user row from `users` table by `req.user.id`.
+
+### 2. [reviewController.js](file:///d:/HTML/Library_Management/Backend/controllers/reviewController.js) — Fix table reference
+The review controller queries `books` table (doesn't exist) to validate book. Fix to `book_info`.
+
+#### [MODIFY] [reviewController.js](file:///d:/HTML/Library_Management/Backend/controllers/reviewController.js)
+
+---
+
+## Frontend Changes
+
+### 3. [Frontend/src/utils/api.js](file:///d:/HTML/Library_Management/Frontend/src/utils/api.js) — Unified API Layer
+Upgrade the existing `window.API` global to include:
+- `API_BASE_URL = 'http://localhost:4000/api'`
+- JWT auto-injection from `localStorage.getItem('token')`
+- `apiGet`, `apiPost`, `apiPut`, `apiDelete` convenience wrappers
+- Toast notifications on error
+- Token expiry handling (redirect to login on 401)
+
+#### [MODIFY] [api.js](file:///d:/HTML/Library_Management/Frontend/src/utils/api.js)
+
+### 4. [Frontend/src/js/api.js](file:///d:/HTML/Library_Management/Frontend/src/js/api.js) — Update BASE_URL
+The module-based api.js (used by [main.js](file:///d:/HTML/Library_Management/Frontend/src/js/main.js)) and the global [utils/api.js](file:///d:/HTML/Library_Management/Frontend/src/utils/api.js) should share the same `API_BASE_URL`. The module version already points to port 4000 and is correct — no change needed.
+
+---
+
+## Per-Page Wiring
+
+### 5. [login_page.html](file:///d:/HTML/Library_Management/Frontend/src/pages/login_page.html) — Already wired via [main.js](file:///d:/HTML/Library_Management/Frontend/src/js/main.js) ✅
+
+### 6. [books_catalog.html](file:///d:/HTML/Library_Management/Frontend/src/pages/books_catalog.html) — Already wired via [main.js](file:///d:/HTML/Library_Management/Frontend/src/js/main.js) ✅  
+Minor: search param fixed (`?q=`), cover images now render. Done in prior session.
+
+### 7. [dashboard.html](file:///d:/HTML/Library_Management/Frontend/src/pages/dashboard.html) — Stats wired via [main.js](file:///d:/HTML/Library_Management/Frontend/src/js/main.js) ✅
+
+### 8. [issue_return_mgmt.html](file:///d:/HTML/Library_Management/Frontend/src/pages/issue_return_mgmt.html) — Transactions wired via [main.js](file:///d:/HTML/Library_Management/Frontend/src/js/main.js) ✅
+
+### 9. [admin_add_edit_book.html](file:///d:/HTML/Library_Management/Frontend/src/pages/admin_add_edit_book.html) — Add Book wired via [main.js](file:///d:/HTML/Library_Management/Frontend/src/js/main.js) ✅
+
+### 10. [user_profile.html](file:///d:/HTML/Library_Management/Frontend/src/pages/user_profile.html)
+Needs `GET /api/auth/me` to display user name/email + borrow count. Add to `main.js::initUserProfile()`.
+
+### 11. [members.html](file:///d:/HTML/Library_Management/Frontend/src/pages/members.html)
+Needs `GET /api/users` (admin-only). Add this endpoint and wire page.
+
+#### [NEW] Backend: Add `GET /api/users` to [adminRoutes.js](file:///d:/HTML/Library_Management/Backend/routers/adminRoutes.js) + [adminController.js](file:///d:/HTML/Library_Management/Backend/controllers/adminController.js)
+
+---
+
+## Verification Plan
+
+### Automated Tests
+No existing test suite found. The [test-api.mjs](file:///d:/HTML/Library_Management/Backend/test-api.mjs) in Backend is a manual script.
+
+Run it after backend starts:
+```bash
+# In Backend directory:
+& "C:\Program Files\nodejs\node.exe" test-api.mjs
+```
+
+### Manual Verification Steps
+
+> [!IMPORTANT]
+> Start backend first: `& "C:\Program Files\nodejs\node.exe" server.js` (in `/Backend`)  
+> Start frontend: `npx -y live-server Frontend/src/pages --port=5500 --no-browser`  
+> Open: `http://127.0.0.1:5500/login_page.html`
+
+| Step | Page | Expected Result |
+|------|------|-----------------|
+| 1 | Open DevTools → Network tab | Requests go to `localhost:4000` |
+| 2 | `login_page.html` → Login with valid creds | Redirects to `books_catalog.html`, token in localStorage |
+| 3 | `books_catalog.html` | Books load from Supabase (titles, covers, ISBNs) |
+| 4 | Search for "python" | Filtered results appear |
+| 5 | `dashboard.html` (admin) | Total books shows 2000 |
+| 6 | `issue_return_mgmt.html` | Transaction history table populates |
+| 7 | `user_profile.html` | User name + email shown |
+| 8 | CORS check | No red CORS errors in DevTools Console |
