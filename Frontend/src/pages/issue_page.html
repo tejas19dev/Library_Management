@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Issue &amp; Return Books — DevLibrary</title>
+    <meta name="description" content="Manage book issuing and returns efficiently with DevLibrary — your modern library management system." />
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Page Stylesheet -->
+    <link rel="stylesheet" href="../styles/issue.css" />
+
+    <style>
+        /*
+         * Hero background override — uses a high-quality Unsplash library photo.
+         * If you place a local image at ../assets/images/library-hero.jpg
+         * it will automatically take precedence with the CSS url().
+         * Replace the src below with your local path once you add the image.
+         */
+        .hero {
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(11, 28, 45, 0.55) 0%,
+                    rgba(11, 28, 45, 0.72) 50%,
+                    rgba(11, 28, 45, 0.88) 100%
+                ),
+                url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&q=85&auto=format&fit=crop')
+                center/cover no-repeat;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════ -->
+<nav class="navbar" id="main-navbar" aria-label="Main navigation">
+
+    <!-- Logo / Brand -->
+    <a href="index1.html" class="navbar-brand" aria-label="DevLibrary Home">
+        <div class="brand-icon" aria-hidden="true">📚</div>
+        <span class="brand-name">Dev<span>Library</span></span>
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <ul class="nav-links" role="list">
+        <li><a href="index1.html"  id="nav-home">Home</a></li>
+        <li><a href="books.html"   id="nav-books">Books</a></li>
+        <li><a href="members.html" id="nav-members">Members</a></li>
+        <li><a href="issue_page.html" id="nav-issue" class="active" aria-current="page">Issue Books</a></li>
+        <li><a href="contact.html" id="nav-contact">Contact Us</a></li>
+    </ul>
+
+    <!-- Hamburger button (mobile) -->
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</nav>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-menu" id="mobile-nav" role="navigation" aria-label="Mobile navigation">
+    <a href="index1.html">Home</a>
+    <a href="books.html">Books</a>
+    <a href="members.html">Members</a>
+    <a href="issue_page.html" class="active" aria-current="page">Issue Books</a>
+    <a href="contact.html">Contact Us</a>
+</div>
+
+<!-- ═══════════════════════════════════════
+     HERO SECTION
+════════════════════════════════════════ -->
+<section class="hero" id="hero" aria-labelledby="hero-title">
+
+    <!-- Main centered content -->
+    <div class="hero-content">
+
+        <!-- Eyebrow badge -->
+        <div class="hero-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>
+            Issue &amp; Return Management
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="hero-title" id="hero-title">
+            Issue &amp; Return<br>
+            <span class="highlight">Books</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="hero-subtitle">
+            Manage book issuing and returns efficiently. Track due dates,
+            monitor overdue items, and keep your library circulation running smoothly.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="hero-cta">
+            <!-- Primary: New Entry -->
+            <a href="#new-entry-form" class="btn-primary" id="hero-new-entry-btn" aria-label="Create a new book issue entry">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                New Entry
+            </a>
+
+            <!-- Ghost: View Records -->
+            <a href="#records-table" class="btn-ghost" id="hero-view-records-btn" aria-label="View all issue records">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+                View Records
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats strip at bottom -->
+    <div class="hero-stats" aria-label="Library circulation statistics">
+        <div class="hero-stat">
+            <span class="stat-value" id="stat-issued">1,284</span>
+            <span class="stat-label">Books Issued</span>
+        </div>
+        <div class="hero-stat">
+            <span class="stat-value" id="stat-due">42</span>
+            <span class="stat-label">Due Today</span>
+        </div>
+        <div class="hero-stat">
+            <span class="stat-value" id="stat-overdue" style="color:#ff6b6b;">12</span>
+            <span class="stat-label">Overdue</span>
+        </div>
+        <div class="hero-stat">
+            <span class="stat-value" id="stat-rate">94.2%</span>
+            <span class="stat-label">Return Rate</span>
+        </div>
+    </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════
+     PAGE CONTENT ANCHOR (placeholder)
+     Replace / expand this section with your
+     actual issue-return form and table.
+════════════════════════════════════════ -->
+<main id="main-content" style="padding: 60px 40px; max-width: 1200px; margin: 0 auto;">
+
+    <!-- New Entry Form anchor target -->
+    <section id="new-entry-form" style="margin-bottom: 60px;">
+        <h2 style="font-size:1.6rem; font-weight:700; color:#0b1c2d; margin-bottom:8px;">New Issue Entry</h2>
+        <p style="color:#64748b; margin-bottom:32px;">Fill in the details below to issue a book to a member.</p>
+
+        <form style="display:grid; grid-template-columns:1fr 1fr; gap:20px; background:#fff; padding:32px; border-radius:14px; box-shadow:0 4px 24px rgba(0,0,0,0.07);">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <label for="member-id" style="font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:#64748b;">Member ID</label>
+                <input id="member-id" type="text" placeholder="e.g. MEM-101" style="padding:12px 16px; border:1.5px solid #e2e8f0; border-radius:8px; font-family:inherit; font-size:0.9rem; transition:border-color 0.2s; outline:none;" onfocus="this.style.borderColor='#00c6a9'" onblur="this.style.borderColor='#e2e8f0'" />
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <label for="book-isbn" style="font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:#64748b;">Book ISBN</label>
+                <input id="book-isbn" type="text" placeholder="978-3-16-148410-0" style="padding:12px 16px; border:1.5px solid #e2e8f0; border-radius:8px; font-family:inherit; font-size:0.9rem; font-family:monospace; transition:border-color 0.2s; outline:none;" onfocus="this.style.borderColor='#00c6a9'" onblur="this.style.borderColor='#e2e8f0'" />
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <label for="issue-date" style="font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:#64748b;">Issue Date</label>
+                <input id="issue-date" type="date" style="padding:12px 16px; border:1.5px solid #e2e8f0; border-radius:8px; font-family:inherit; font-size:0.9rem; transition:border-color 0.2s; outline:none;" onfocus="this.style.borderColor='#00c6a9'" onblur="this.style.borderColor='#e2e8f0'" />
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <label for="due-date" style="font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:#64748b;">Due Date</label>
+                <input id="due-date" type="date" style="padding:12px 16px; border:1.5px solid #e2e8f0; border-radius:8px; font-family:inherit; font-size:0.9rem; transition:border-color 0.2s; outline:none;" onfocus="this.style.borderColor='#00c6a9'" onblur="this.style.borderColor='#e2e8f0'" />
+            </div>
+            <div style="grid-column:1/-1; display:flex; justify-content:flex-end; gap:12px; padding-top:8px;">
+                <button type="reset" style="padding:12px 28px; border-radius:50px; border:1.5px solid #cbd5e1; background:transparent; font-family:inherit; font-size:0.9rem; font-weight:500; color:#64748b; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">Discard</button>
+                <button type="submit" style="padding:12px 32px; border-radius:50px; border:none; background:linear-gradient(135deg,#00c6a9,#009982); color:#0b1c2d; font-family:inherit; font-size:0.9rem; font-weight:700; cursor:pointer; transition:all 0.3s; box-shadow:0 4px 16px rgba(0,198,169,0.35);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,198,169,0.45)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 16px rgba(0,198,169,0.35)'">Issue Book</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Records table anchor -->
+    <section id="records-table">
+        <h2 style="font-size:1.6rem; font-weight:700; color:#0b1c2d; margin-bottom:8px;">Active Circulation</h2>
+        <p style="color:#64748b; margin-bottom:24px;">Manage pending returns and overdue items.</p>
+        <!-- Table content goes here — connect to your backend data -->
+        <div style="background:#fff; border-radius:14px; box-shadow:0 4px 24px rgba(0,0,0,0.07); overflow:hidden; text-align:center; padding:60px 24px; color:#94a3b8; font-size:0.9rem;">
+            📋 Connect this section to your backend to display circulation records.
+        </div>
+    </section>
+</main>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer style="background:#0b1c2d; color:rgba(255,255,255,0.55); text-align:center; padding:20px; font-size:0.8rem; font-family:'Poppins',sans-serif; letter-spacing:0.5px; margin-top:60px;">
+    © 2026 DevLibrary &nbsp;|&nbsp; Developed by DevTeam
+</footer>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT — Hamburger Menu
+════════════════════════════════════════ -->
+<script>
+    (function () {
+        const btn       = document.getElementById('hamburger-btn');
+        const mobileNav = document.getElementById('mobile-nav');
+
+        function toggleMenu(open) {
+            btn.classList.toggle('open', open);
+            btn.setAttribute('aria-expanded', open);
+            mobileNav.classList.toggle('open', open);
+        }
+
+        btn.addEventListener('click', function () {
+            const isOpen = mobileNav.classList.contains('open');
+            toggleMenu(!isOpen);
+        });
+
+        // Close mobile menu on outside click
+        document.addEventListener('click', function (e) {
+            if (!btn.contains(e.target) && !mobileNav.contains(e.target)) {
+                toggleMenu(false);
+            }
+        });
+
+        // Close mobile menu on resize above breakpoint
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 900) toggleMenu(false);
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileNav.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () { toggleMenu(false); });
+        });
+
+        // Set today's date as default issue date
+        const issueDateInput = document.getElementById('issue-date');
+        const dueDateInput   = document.getElementById('due-date');
+        if (issueDateInput && dueDateInput) {
+            const today = new Date();
+            const dueDate = new Date(today);
+            dueDate.setDate(dueDate.getDate() + 14); // Default 14-day lending period
+
+            const fmt = d => d.toISOString().split('T')[0];
+            issueDateInput.value = fmt(today);
+            dueDateInput.value   = fmt(dueDate);
+        }
+    })();
+</script>
+
+</body>
+</html>
