@@ -18,8 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Route logic
     if (path.includes('login_page.html')) {
         initLogin();
-    } else if (path.includes('books_catalog.html')) {
-        checkAuth();
+    } else if (path.includes('signup_page.html')) {
+        initSignup();
+    } else if (path.includes('books.html')) {
         initBooksCatalog();
     } else if (path.includes('dashboard.html')) {
         checkAuth(true); // requires admin
@@ -58,7 +59,7 @@ function initLogin() {
         if (decoded?.role === 'admin') {
             window.location.href = 'dashboard.html';
         } else {
-            window.location.href = 'books_catalog.html';
+            window.location.href = 'books.html';
         }
         return;
     }
@@ -80,6 +81,60 @@ function initLogin() {
         } finally {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
+        }
+    });
+}
+
+// ── SIGNUP PAGE ────────────────────────────────────────────────
+function initSignup() {
+    const form = document.getElementById('signup-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const fullName = document.getElementById('full_name').value.trim();
+        const email    = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm  = document.getElementById('confirm_password').value;
+
+        // Client-side validation
+        if (!fullName || fullName.length < 2) {
+            alert('Please enter your full name.');
+            return;
+        }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert('Enter a valid email address.');
+            return;
+        }
+        if (!password || password.length < 6) {
+            alert('Password must be at least 6 characters.');
+            return;
+        }
+        if (password !== confirm) {
+            alert('Passwords do not match.');
+            return;
+        }
+
+        const btn = form.querySelector('button[type="submit"]');
+        btn.textContent = 'Creating account...';
+        btn.disabled = true;
+
+        try {
+            // 1. Register
+            await fetchAPI('/auth/signup', { method: 'POST', body: { email, password, full_name: fullName, role: 'user' } });
+
+            // 2. Auto-login
+            const loginData = await fetchAPI('/auth/login', { method: 'POST', body: { email, password } }, true);
+            localStorage.setItem('token', loginData.token);
+            alert('Account created! Welcome to The Archive.');
+
+            setTimeout(() => {
+                window.location.href = 'books.html';
+            }, 800);
+        } catch (err) {
+            btn.textContent = 'Create Account';
+            btn.disabled = false;
         }
     });
 }

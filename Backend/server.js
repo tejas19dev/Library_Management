@@ -10,6 +10,9 @@ import bookRoutes from './routers/bookRoutes.js';
 import transactionRoutes from './routers/transactionRoutes.js';
 import reviewRoutes from './routers/reviewRoutes.js';
 import adminRoutes from './routers/adminRoutes.js';
+import paymentRoutes from './routers/paymentRoutes.js';
+
+console.log('✅ Payment routes loaded:', paymentRoutes.stack.map(r => r.route?.path));
 
 // Load .env relative to this file — works regardless of cwd
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -17,6 +20,8 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+console.log('Loading routes...');
 
 // Middleware
 const allowedOrigins = [
@@ -65,6 +70,13 @@ app.use('/api/books', bookRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Debug route - test if payments route loads
+app.get('/test-payments', (req, res) => {
+    res.json({ message: 'payments router loaded', routes: paymentRoutes.stack.map(r => r.route?.path) });
+});
+
+app.use('/api/payments', paymentRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -200,23 +200,20 @@
                     // Fake original MRP for visual
                     let mrp = Math.floor(item.price * 1.4);
 
-                    // Determine aesthetic based on item type/name
-                    let icon = '📘';
-                    let typeTag = 'Book';
-                    let nameLower = item.name.toLowerCase();
-                    if(nameLower.includes('fine')) { icon = '⚠️'; typeTag = 'Due Fine'; }
-                    else if(nameLower.includes('rent')) { icon = '📅'; typeTag = 'Rental Charge'; }
+                    // Determine image - use stored image or placeholder
+                    let imageHtml = item.image 
+                        ? `<img src="${item.image}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;">`
+                        : `<div class="book-placeholder" style="font-size: 30px;">📚</div>`;
 
                     container.innerHTML += `
                         <div class="cart-item-card">
                             <div class="item-top">
                                 <div class="item-img">
-                                    <div class="book-placeholder" style="font-size: 30px;">${icon}</div>
-                                    <div style="font-size: 11px; margin-top: 5px; color: #888; text-align: center;">${typeTag}</div>
+                                    ${imageHtml}
                                 </div>
                                 <div class="item-details" style="padding-left: 20px;">
                                     <div class="item-title">${item.name}</div>
-                                    <div class="item-seller">Type: ${typeTag}</div>
+                                    <div class="item-seller">Seller: DevLibrary</div>
                                     <div class="qty-dropdown" style="margin-top: 5px;">
                                         Qty: 
                                         <select onchange="updateQtySelect(${index}, this.value)" style="padding: 2px;">
@@ -286,7 +283,7 @@
             let flatCart = [];
             groupedCart.forEach(item => {
                 for(let i=0; i<item.quantity; i++) {
-                    flatCart.push({ name: item.name, price: item.price });
+                    flatCart.push({ name: item.name, price: item.price, image: item.image });
                 }
             });
             localStorage.setItem('cart', JSON.stringify(flatCart));

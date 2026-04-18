@@ -57,7 +57,7 @@ export async function login(email, password) {
         if (decoded?.role === 'admin') {
             window.location.href = 'dashboard.html';
         } else {
-            window.location.href = 'books_catalog.html';
+            window.location.href = 'books.html';
         }
     } catch (error) {
         // Error already handled and toasted by fetchAPI

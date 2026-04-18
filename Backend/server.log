@@ -1,0 +1,8 @@
+✅ Supabase client ready → https://syfkppyeffuahepzhlcr.supabase.co
+
+🚀 Server running on http://localhost:4000
+📚 API Base: http://localhost:4000/api
+📖 Books API: http://localhost:4000/api/books
+🔐 Auth API:  http://localhost:4000/api/auth
+📊 Admin API: http://localhost:4000/api/admin/stats
+
